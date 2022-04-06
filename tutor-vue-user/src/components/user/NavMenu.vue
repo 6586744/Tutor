@@ -27,9 +27,7 @@
         </el-dropdown-menu>
       </el-dropdown>
 <!--      <i style="float:right;font-size: 25px;color: #222;padding-top: 8px">{{u_show}}</i>-->
-      <!-- <span style="padding-top: 20px;right: 43%;font-size: 20px;font-weight: bold">
-        家教系统
-      </span> -->
+<!-- <span style="padding-top: 20px;right: 43%;font-size: 20px;font-weight: bold">家教系统</span> -->
     </el-menu>
     <router-view :key="$route.fullPath"/>
   </div>

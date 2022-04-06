@@ -23,6 +23,7 @@ import teacherOrder from "../components/user/my/teacherOrder";
 import indexOne from "../components/user/index";
 import testBaiduMap from "../components/user/testBaiduMap";
 import price from "../components/user/price";
+import video from "../components/user/video";
 import userCheckSubscribe from "../components/user/my/userCheckSubscribe";
 import teacherCheckSubscribe from "../components/user/my/teacherCheckSubscribe";
 
@@ -60,6 +61,14 @@ export default new VueRouter({
       path: '*',
       component: Error
     },
+    {
+      path: '/video',
+      name: 'video',
+      component: video,
+      meta: {
+        requireAuth: true
+      },
+    },
 
     {
       path: '/index',
@@ -71,7 +80,6 @@ export default new VueRouter({
       },
       children: [
         {
-          // /:type?/search?
           path: '/indexOne',
           props : true,
           name: 'indexOne',
@@ -81,7 +89,6 @@ export default new VueRouter({
           },
         },
         {
-          // /:type?/search?
           path: '/testBaiduMap',
           props : true,
           name: 'testBaiduMap',
@@ -91,7 +98,6 @@ export default new VueRouter({
           },
         },
         {
-          // /:type?/search?
           path: '/price',
           props : true,
           name: 'price',
@@ -101,7 +107,6 @@ export default new VueRouter({
           },
         },
         {
-          // /:type?/search?
           path: '/BlogList',
           props : true,
           name: 'BlogList',
@@ -111,7 +116,6 @@ export default new VueRouter({
           },
         },
         {
-          // /:type?/search?
           path: '/newOrder',
           props : true,
           name: 'newOrder',
@@ -121,7 +125,6 @@ export default new VueRouter({
           },
         },
         {
-          // /:type?/search?
           path: '/findTeacher',
           props : true,
           name: 'findTeacher',
@@ -131,7 +134,6 @@ export default new VueRouter({
           },
         },
         {
-          // /:type?/search?
           path: '/teacherInfo/:userId',
           props : true,
           name: 'teacherInfo',
@@ -150,7 +152,6 @@ export default new VueRouter({
           component:PreviewBlog
         },
         {
-          // /:type?/search?
           path: '/myIndex',
           props : true,
           name: 'myIndex',
@@ -160,7 +161,6 @@ export default new VueRouter({
           },
           children:[
             {
-              // /:type?/search?
               path: '/teacherCheckSubscribe',
               props : true,
               name: 'teacherCheckSubscribe',
@@ -170,7 +170,6 @@ export default new VueRouter({
               },
             },
             {
-              // /:type?/search?
               path: '/teacherInfo1/:userId',
               props : true,
               name: 'teacherInfo1',
@@ -180,7 +179,6 @@ export default new VueRouter({
               },
             },
             {
-              // /:type?/search?
               path: '/userCheckSubscribe/:orderId',
               name: 'userCheckSubscribe',
               component: userCheckSubscribe,
@@ -189,7 +187,6 @@ export default new VueRouter({
               },
             },
             {
-              // /:type?/search?
               path: '/teacherSubscribe',
               name: 'teacherSubscribe',
               component: teacherSubscribe,
@@ -198,7 +195,6 @@ export default new VueRouter({
               },
             },
             {
-              // /:type?/search?
               path: '/teacherOrder',
               name: 'teacherOrder',
               component: teacherOrder,
@@ -207,7 +203,6 @@ export default new VueRouter({
               },
             },
             {
-              // /:type?/search?
               path: '/userOrder',
               name: 'userOrder',
               component: userOrder,
@@ -216,7 +211,6 @@ export default new VueRouter({
               },
             },
             {
-              // /:type?/search?
               path: '/userAddOrder',
               name: 'userAddOrder',
               component: userAddOrder,
@@ -225,7 +219,6 @@ export default new VueRouter({
               },
             },
             {
-              // /:type?/search?
               path: '/expert',
               name: 'expert',
               component: expert,
@@ -234,7 +227,6 @@ export default new VueRouter({
               },
             },
             {
-              // /:type?/search?
               path: '/previewUserInfo',
               name: 'previewUserInfo',
               component: previewUserInfo,
@@ -243,7 +235,6 @@ export default new VueRouter({
               },
             },
             {
-              // /:type?/search?
               path: '/education',
               name: 'education',
               component: education,
@@ -260,7 +251,6 @@ export default new VueRouter({
               },
             },
             {
-              // /:type?/search?
               path: '/editorPassword',
               name: 'editorPassword',
               component: editorPassword,
@@ -269,7 +259,6 @@ export default new VueRouter({
               },
             },
             {
-              // /:type?/search?
               path: '/userInfo',
               name: 'userInfo',
               component: UserInfo,

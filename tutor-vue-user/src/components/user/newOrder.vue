@@ -6,8 +6,6 @@
         <el-tab-pane label="最新发布" name="1"></el-tab-pane>
         <el-tab-pane label="同一区域" name="2"></el-tab-pane>
         <el-tab-pane v-if="userRole == '2'" label="擅长推荐" name="3"></el-tab-pane>
-
-        <!--        <el-tab-pane label="定时任务补偿" name="fourth">定时任务补偿</el-tab-pane>-->
       </el-tabs>
       <div class="top-title">
         <span>{{orderList.length}} 条订单</span>
@@ -40,7 +38,6 @@
         <td>
         <div @click="toOrderInfo(item.o_id)" class="comment-detail" >
           <p>孩子姓名：{{item.o_name}}</p>
-<!--          <p>教学科目：{{item.o_type}}</p>-->
 <!--          <p>教学科目：{{item.o_type}}</p>-->
           <p>教学地址：{{item.o_address}}</p>
           <p>要求：{{item.o_time}}----{{item.o_reamke}}</p>
