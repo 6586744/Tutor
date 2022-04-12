@@ -10,6 +10,10 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
 const portfinder = require('portfinder')
 
+// https 服务开启
+const https = require('https')
+const fs = require('fs')
+
 const HOST = process.env.HOST
 const PORT = process.env.PORT && Number(process.env.PORT)
 
@@ -22,13 +26,14 @@ const devWebpackConfig = merge(baseWebpackConfig, {
 
   // these devServer options should be customized in /config/index.js
   devServer: {
-	inline:false,
     clientLogLevel: 'warning',
     historyApiFallback: {
       rewrites: [
         { from: /.*/, to: path.posix.join(config.dev.assetsPublicPath, 'index.html') },
       ],
     },
+    // https 服务开启
+    https: true,
     hot: true,
     contentBase: false, // since we use CopyWebpackPlugin.
     compress: true,
@@ -43,6 +48,13 @@ const devWebpackConfig = merge(baseWebpackConfig, {
     quiet: true, // necessary for FriendlyErrorsPlugin
     watchOptions: {
       poll: config.dev.poll,
+    },
+    disableHostCheck: true,
+    // https 服务开启
+    https: {
+      key: fs.readFileSync(path.join(__dirname, './cert/private.key')),
+      cert: fs.readFileSync(path.join(__dirname, './cert/file.crt')),
+      ca: fs.readFileSync(path.join(__dirname, './cert/file.crt'))
     }
   },
   plugins: [
