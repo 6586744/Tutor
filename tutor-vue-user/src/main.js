@@ -7,7 +7,7 @@ import store from './store/modules/user'
 //导入elementUI
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
-Axios.defaults.baseURL = "http://127.0.0.1:8083"
+Axios.defaults.baseURL = "http://192.168.0.110:8083"
 
 //mavonEditor 编辑器
 import mavonEditor from 'mavon-editor'
