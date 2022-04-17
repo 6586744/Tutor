@@ -61,14 +61,6 @@ export default new VueRouter({
       path: '*',
       component: Error
     },
-    {
-      path: '/video',
-      name: 'video',
-      component: video,
-      meta: {
-        requireAuth: true
-      },
-    },
 
     {
       path: '/index',
@@ -102,6 +94,15 @@ export default new VueRouter({
           props : true,
           name: 'price',
           component: price,
+          meta: {
+            requireAuth: true
+          },
+        },
+        {
+          path: '/video',
+          props: true,
+          name: 'video',
+          component: video,
           meta: {
             requireAuth: true
           },

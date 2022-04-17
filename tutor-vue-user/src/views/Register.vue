@@ -79,7 +79,7 @@ export default {
         radio: '家长',
         username: '',
         password: '',
-        u_url: 'http://127.0.0.1:8083/imgUpload',
+        u_url: 'https://192.168.0.110:8083/imgUpload',
         u_image:'',
         passwordTrue:'',
         u_show:'',

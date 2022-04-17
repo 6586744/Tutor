@@ -1,58 +1,174 @@
 <template>
-
   <div>
-    <el-alert style="background-color: #409EFF; color: #f0f2f5; font-style: unset; margin-top: 10px; margin-bottom: 20px" :closable="false" title="订单列表"  />
+    <el-alert
+      style="
+        background-color: #409eff;
+        color: #f0f2f5;
+        font-style: unset;
+        margin-top: 10px;
+        margin-bottom: 20px;
+      "
+      :closable="false"
+      title="订单列表"
+    />
 
-    <el-table :data="tableData.slice((currentPage-1)*PageSize,currentPage*PageSize)">
-      <el-table-column prop="o_id" label="订单号" >
-      </el-table-column>
-      <el-table-column prop="o_student_name" label="发布者" >
-      </el-table-column>
-      <el-table-column prop="o_name" label="学生姓名" >
-      </el-table-column>
-      <el-table-column prop="o_type" label="课程类型" >
-      </el-table-column>
-      <el-table-column prop="o_teacher_name" label="教师" >
-      </el-table-column>
-      <el-table-column prop="a_name" label="学生押金" >
+    <el-table
+      :data="
+        tableData.slice((currentPage - 1) * PageSize, currentPage * PageSize)
+      "
+    >
+      <el-table-column prop="o_id" label="订单号"> </el-table-column>
+      <el-table-column prop="o_student_name" label="发布者"> </el-table-column>
+      <el-table-column prop="o_name" label="学生姓名"> </el-table-column>
+      <el-table-column prop="o_type" label="课程类型"> </el-table-column>
+      <el-table-column prop="o_teacher_name" label="教师"> </el-table-column>
+      <el-table-column prop="a_name" label="学生押金">
         <template slot-scope="scope">
-          <el-tag type="success" size="small" plain v-if="scope.row.o_user_status == '1'" >已交</el-tag>
-          <el-tag type="danger" size="small" plain v-if="scope.row.o_user_status == '0'" >未交</el-tag>
+          <el-tag
+            type="success"
+            size="small"
+            plain
+            v-if="scope.row.o_user_status == '1'"
+            >已交</el-tag
+          >
+          <el-tag
+            type="danger"
+            size="small"
+            plain
+            v-if="scope.row.o_user_status == '0'"
+            >未交</el-tag
+          >
         </template>
       </el-table-column>
-      <el-table-column prop="a_name" label="教师押金" >
+      <el-table-column prop="a_name" label="教师押金">
         <template slot-scope="scope">
-          <el-tag type="success" size="small" plain v-if="scope.row.o_teacher_status == '1'" >已交</el-tag>
-          <el-tag type="danger" size="small" plain v-if="scope.row.o_teacher_status == '0'" >未交</el-tag>
+          <el-tag
+            type="success"
+            size="small"
+            plain
+            v-if="scope.row.o_teacher_status == '1'"
+            >已交</el-tag
+          >
+          <el-tag
+            type="danger"
+            size="small"
+            plain
+            v-if="scope.row.o_teacher_status == '0'"
+            >未交</el-tag
+          >
         </template>
       </el-table-column>
-      <el-table-column prop="o_phone" label="联系方式" >
+      <el-table-column prop="o_phone" label="联系方式">
         <template slot-scope="scope">
-          <el-tag type="success" size="small" plain v-if="scope.row.o_status == '0'" >已屏蔽</el-tag>
-          <el-tag type="danger" size="small" plain v-if="scope.row.o_status == '1'" >已屏蔽</el-tag>
-          <el-tag type="danger" size="small" plain v-if="scope.row.o_status == '2'" >{{scope.row.o_phone}}</el-tag>
-          <el-tag type="danger" size="small" plain v-if="scope.row.o_status == '3'" >{{scope.row.o_phone}}</el-tag>
-          <el-tag type="danger" size="small" plain v-if="scope.row.o_status == '4'" >{{scope.row.o_phone}}</el-tag>
+          <el-tag
+            type="success"
+            size="small"
+            plain
+            v-if="scope.row.o_status == '0'"
+            >已屏蔽</el-tag
+          >
+          <el-tag
+            type="danger"
+            size="small"
+            plain
+            v-if="scope.row.o_status == '1'"
+            >已屏蔽</el-tag
+          >
+          <el-tag
+            type="danger"
+            size="small"
+            plain
+            v-if="scope.row.o_status == '2'"
+            >{{ scope.row.o_phone }}</el-tag
+          >
+          <el-tag
+            type="danger"
+            size="small"
+            plain
+            v-if="scope.row.o_status == '3'"
+            >{{ scope.row.o_phone }}</el-tag
+          >
+          <el-tag
+            type="danger"
+            size="small"
+            plain
+            v-if="scope.row.o_status == '4'"
+            >{{ scope.row.o_phone }}</el-tag
+          >
         </template>
       </el-table-column>
-      <el-table-column prop="a_name" label="订单状态" >
+      <el-table-column prop="a_name" label="订单状态">
         <template slot-scope="scope">
-          <el-tag type="success" size="small" plain v-if="scope.row.o_status == '0'" >寻找中</el-tag>
-          <el-tag type="danger" size="small" plain v-if="scope.row.o_status == '1'" >对接中</el-tag>
-          <el-tag type="danger" size="small" plain v-if="scope.row.o_status == '2'" >教学中</el-tag>
-          <el-tag type="danger" size="small" plain v-if="scope.row.o_status == '3'" >待评价</el-tag>
-          <el-tag type="danger" size="small" plain v-if="scope.row.o_status == '4'" >已完成</el-tag>
+          <el-tag
+            type="success"
+            size="small"
+            plain
+            v-if="scope.row.o_status == '0'"
+            >寻找中</el-tag
+          >
+          <el-tag
+            type="danger"
+            size="small"
+            plain
+            v-if="scope.row.o_status == '1'"
+            >对接中</el-tag
+          >
+          <el-tag
+            type="danger"
+            size="small"
+            plain
+            v-if="scope.row.o_status == '2'"
+            >教学中</el-tag
+          >
+          <el-tag
+            type="danger"
+            size="small"
+            plain
+            v-if="scope.row.o_status == '3'"
+            >待评价</el-tag
+          >
+          <el-tag
+            type="danger"
+            size="small"
+            plain
+            v-if="scope.row.o_status == '4'"
+            >已完成</el-tag
+          >
         </template>
       </el-table-column>
       <el-table-column prop="time" label="创建时间" />
-      <el-table-column
-        fixed="right"
-        label="操作"
-        width="200">
+      <el-table-column fixed="right" label="操作" width="200">
         <template slot-scope="scope">
-          <el-button type="text" v-if="scope.row.o_status == '1'  && scope.row.o_teacher_status == '0'" size="small" @click="addUserStatus(scope.row)">缴纳押金</el-button>
-          <el-button type="text" v-if="scope.row.o_status == '1'" size="small" @click="updateOrderTeacher(scope.row)">取消对接</el-button>
-          <el-button type="text" v-if="scope.row.o_status == '1'" size="small" @click="openOrderInfo(scope.row)">查看订单</el-button>
+          <el-button
+            type="text"
+            v-if="
+              scope.row.o_status == '1' && scope.row.o_teacher_status == '0'
+            "
+            size="small"
+            @click="addUserStatus(scope.row)"
+            >缴纳押金</el-button
+          >
+          <el-button
+            type="text"
+            v-if="scope.row.o_status == '1'"
+            size="small"
+            @click="updateOrderTeacher(scope.row)"
+            >取消对接</el-button
+          >
+          <el-button
+            type="text"
+            v-if="scope.row.o_status == '1'"
+            size="small"
+            @click="openOrderInfo(scope.row)"
+            >查看订单</el-button
+          >
+          <el-button
+            type="text"
+            v-if="scope.row.o_status == '2'"
+            size="small"
+            @click="video(scope.row)"
+            >线上授课</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
@@ -64,44 +180,84 @@
             <span>订单详情</span>
           </div>
           <div class="name-role">
-            <span class="sender">{{user.o_student_name}}</span>
+            <span class="sender">{{ user.o_student_name }}</span>
           </div>
           <div class="name-role">
             <el-avatar style="text-align: center" :size="60">
-              <img :src="user.o_student_image"/>
+              <img :src="user.o_student_image" />
             </el-avatar>
           </div>
           <div class="registe-info">
-          <span class="registe-info">
-            发布时间：
-            <li class="fa fa-clock-o"></li>
-             {{user.time}}
-          </span>
+            <span class="registe-info">
+              发布时间：
+              <li class="fa fa-clock-o"></li>
+              {{ user.time }}
+            </span>
           </div>
           <el-divider></el-divider>
           <div class="personal-relation">
-            <div class="relation-item">学生姓名:  <div style="float: right; padding-right:20px;">{{user.o_name}}</div></div>
+            <div class="relation-item">
+              学生姓名:
+              <div style="float: right; padding-right: 20px">
+                {{ user.o_name }}
+              </div>
+            </div>
           </div>
           <div class="personal-relation">
-            <div class="relation-item">联系方式:  <div style="float: right; padding-right:20px;">{{user.o_phone}}</div></div>
+            <div class="relation-item">
+              联系方式:
+              <div style="float: right; padding-right: 20px">
+                {{ user.o_phone }}
+              </div>
+            </div>
           </div>
           <div class="personal-relation">
-            <div class="relation-item">学生性别:  <div style="float: right; padding-right:20px;">{{user.o_sex}}</div></div>
+            <div class="relation-item">
+              学生性别:
+              <div style="float: right; padding-right: 20px">
+                {{ user.o_sex }}
+              </div>
+            </div>
           </div>
           <div class="personal-relation">
-            <div class="relation-item">学生年龄  <div style="float: right; padding-right:20px;">{{user.o_age}}</div></div>
+            <div class="relation-item">
+              学生年龄
+              <div style="float: right; padding-right: 20px">
+                {{ user.o_age }}
+              </div>
+            </div>
           </div>
           <div class="personal-relation">
-            <div class="relation-item">科目:  <div style="float: right; padding-right:20px;">{{user.o_type}}</div></div>
+            <div class="relation-item">
+              科目:
+              <div style="float: right; padding-right: 20px">
+                {{ user.o_type }}
+              </div>
+            </div>
           </div>
           <div class="personal-relation">
-            <div class="relation-item">价格:  <div style="float: right; padding-right:20px;">{{user.o_price}}</div></div>
+            <div class="relation-item">
+              价格:
+              <div style="float: right; padding-right: 20px">
+                {{ user.o_price }}
+              </div>
+            </div>
           </div>
           <div class="personal-relation">
-            <div class="relation-item">上课时间:  <div style="float: right; padding-right:20px;">{{user.o_time}}</div></div>
+            <div class="relation-item">
+              上课时间:
+              <div style="float: right; padding-right: 20px">
+                {{ user.o_time }}
+              </div>
+            </div>
           </div>
           <div class="personal-relation">
-            <div class="relation-item">备注:  <div style="float: right; padding-right:20px;">{{user.o_reamke}}</div></div>
+            <div class="relation-item">
+              备注:
+              <div style="float: right; padding-right: 20px">
+                {{ user.o_reamke }}
+              </div>
+            </div>
           </div>
         </el-card>
       </div>
@@ -129,17 +285,17 @@ export default {
   data() {
     return {
       dialogFormVisible: false,
-      updateForm : false,
+      updateForm: false,
       //添加表单的数据
       tableData: [],
       // 默认显示第几页
-      currentPage:1,
+      currentPage: 1,
       // 个数选择器（可修改）
-      pageSizes:[1,2,3,4,5,6,7,8,9,10],
+      pageSizes: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
       // 总条数，根据接口获取数据长度(注意：这里不能为空)
-      totalCount:1,
+      totalCount: 1,
       // 个数选择器（可修改）
-      PageSize:10,
+      PageSize: 10,
 
       /**
        * 查看订单
@@ -153,92 +309,94 @@ export default {
     this.loadTeacher();
   },
 
-  methods : {
-
+  methods: {
     openOrderInfo(row) {
-      this.showOrderInfo = true
-      this.axios.get(
-        '/order/getOrderById',
-        {
+      this.showOrderInfo = true;
+      this.axios
+        .get("/order/getOrderById", {
           params: {
-            id: row.o_id,}
-        }
-      ).then(
-        (resp) => {
+            id: row.o_id,
+          },
+        })
+        .then((resp) => {
           this.user = resp.data;
-          this.user.o_phone = resp.data.o_phone.substring(0,3) + "****" + resp.data.o_phone.substring(7,11)
-        }
-      )
+          this.user.o_phone =
+            resp.data.o_phone.substring(0, 3) +
+            "****" +
+            resp.data.o_phone.substring(7, 11);
+        });
     },
 
     /**
      * 取消对接这个订单
      */
     updateOrderTeacher(row) {
-      this.axios.post(
-        '/order/addOrderTeacher', {
+      this.axios
+        .post("/order/addOrderTeacher", {
           o_id: row.o_id,
-          o_teacher_id : row.o_teacher_id,
-          o_teacher_name : '',
-          o_teacher_image : '',
-          o_status: '0',
-          o_user_status : '0',
+          o_teacher_id: row.o_teacher_id,
+          o_teacher_name: "",
+          o_teacher_image: "",
+          o_status: "0",
+          o_user_status: "0",
           o_teacher_status: "0",
-        }
-      ).then(
-        (resp) => {
+        })
+        .then((resp) => {
           this.$confirm("取消成功");
           this.load();
-        }
-      )
+        });
     },
 
     /**
      * 这里假装调用了支付接口、
      */
     addUserStatus(row) {
-      this.axios.post(
-        '/order/deposit', {
+      this.axios
+        .post("/order/deposit", {
           o_id: row.o_id,
-          o_teacher_status: '1'
-        }
-      ).then(
-        (resp) => {
+          o_teacher_status: "1",
+        })
+        .then((resp) => {
           this.$confirm("押金缴纳成功");
-          this.loadTeacher()
-        }
-      )
+          this.loadTeacher();
+        });
     },
     /**
      */
     // 分页
     handleSizeChange(val) {
-      this.PageSize=val
-      this.currentPage=1
+      this.PageSize = val;
+      this.currentPage = 1;
     },
     handleCurrentChange(val) {
-      this.currentPage=val
+      this.currentPage = val;
     },
 
     loadTeacher() {
-      this.axios.post(
-        '/order/queryOrder', {
-          o_teacher_id: this.$store.state.user.u_name.u_id
-        }
-      ).then(
-        (resp) => {
+      this.axios
+        .post("/order/queryOrder", {
+          o_teacher_id: this.$store.state.user.u_name.u_id,
+        })
+        .then((resp) => {
           this.tableData = resp.data;
-          this.totalCount = resp.data.length
-        }
-      ).catch(
-        (resp) => {
+          this.totalCount = resp.data.length;
+        })
+        .catch((resp) => {
           this.$confirm("网络异常！");
-        }
-      )
+        });
     },
 
-  }
-}
+    video(row) {
+      this.$router.push({
+        name: "video",
+        params: {
+          name: row.o_teacher_name,
+          ortherName: row.o_student_name,
+        },
+      });
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
@@ -359,7 +517,7 @@ export default {
   content: "";
 }
 .clearfix:after {
-  clear: both
+  clear: both;
 }
 
 .box-card {
@@ -369,31 +527,30 @@ export default {
 .name-role {
   font-size: 16px;
   padding: 5px;
-  text-align:center;
+  text-align: center;
 }
-.sender{
-  text-align:center;
+.sender {
+  text-align: center;
   font-family: 华文行楷;
   color: #303133;
   font-size: 25px;
 }
-.registe-info{
+.registe-info {
   text-align: center;
-  padding-top:10px;
+  padding-top: 10px;
 }
 .personal-relation {
   font-size: 16px;
   padding: 0px 5px 15px;
   margin-right: 1px;
-  width: 100%
+  width: 100%;
 }
 
 .relation-item {
   padding: 12px;
-
 }
-.dialog-footer{
-  padding-top:10px ;
+.dialog-footer {
+  padding-top: 10px;
   padding-left: 10%;
 }
 //布局样式区
@@ -423,6 +580,5 @@ export default {
   padding: 10px 0;
   background-color: #f9fafc;
 }
-
 </style>
 

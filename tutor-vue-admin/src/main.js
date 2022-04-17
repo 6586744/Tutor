@@ -80,7 +80,7 @@ function getServerConfig() {
 import Axios from "axios";
 import VueAxios from "vue-axios";
 Vue.use(VueAxios, Axios)
-Axios.defaults.baseURL = "http://127.0.0.1:8083"
+Axios.defaults.baseURL = "https://192.168.0.110:8083"
 
 //实现前端路由拦截功能
 router.beforeEach((to, from, next) => {

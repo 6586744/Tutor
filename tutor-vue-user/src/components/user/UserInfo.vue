@@ -66,7 +66,7 @@ export default {
     return {
       editTure : false,
       u_role:'',
-      u_url: 'http://127.0.0.1:8083/imgUpload',//头像上传地址
+      u_url: 'https://192.168.0.110:8083/imgUpload',//头像上传地址
       form : {
         u_id :'',
         u_name:'',

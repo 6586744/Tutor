@@ -13,6 +13,7 @@
     "axios": "^0.21.0",
     "babel-runtime": "^6.26.0",
     "element-ui": "^2.15.6",
+    "jquery": "^3.6.0",
     "marked": "^1.2.2",
     "mavon-editor": "^2.9.0",
     "qs": "^6.9.4",

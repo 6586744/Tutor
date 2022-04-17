@@ -7,7 +7,7 @@ import store from './store/modules/user'
 //导入elementUI
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
-Axios.defaults.baseURL = "http://192.168.0.110:8083"
+Axios.defaults.baseURL = "https://192.168.0.110:8083"
 
 //mavonEditor 编辑器
 import mavonEditor from 'mavon-editor'
@@ -34,40 +34,20 @@ Vue.use(VueAxios, Axios)
 
 //实现前端路由拦截功能
 router.beforeEach((to, from, next) => {
-    if (to.meta.requireAuth) {
-      // if(to.meta.isAdmin) {
-      //   console.log(store.state.user.u_name.u_root)
-      //   if(store.state.user.u_name.u_root == 1){
-      //     next()
-      //   }
-      //   else {
-      //     if(from.path == "/AdminLogin")
-      //     {
-      //       next()
-      //     }
-      //     else {
-      //       next({
-      //         path: '/Error',
-      //         query: {redirect: to.fullPath}
-      //       })
-      //     }
-      //   }
-      // }
-      // else {
-        console.log("requireAuth : true")
-        if (store.state.user.u_name) {
-          next()
-        } else {
-          next({
-            path: '/Login',
-            query: {redirect: to.fullPath}
-          })
-        }
-      // }
-    } else {
+  if (to.meta.requireAuth) {
+    console.log("requireAuth : true")
+    if (store.state.user.u_name) {
       next()
+    } else {
+      next({
+        path: '/Login',
+        query: { redirect: to.fullPath }
+      })
     }
+  } else {
+    next()
   }
+}
 )
 
 /* eslint-disable no-new */

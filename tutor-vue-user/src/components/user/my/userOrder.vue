@@ -57,6 +57,7 @@
           <el-button type="text" v-if="scope.row.o_status == '1' && scope.row.o_user_status == '0'" size="small" @click="addUserStatus(scope.row)">缴纳押金</el-button>
           <el-button type="text" v-if="scope.row.o_status == '1'" size="small" @click="updateOrderTeacher(scope.row)">换老师</el-button>
           <el-button type="text" v-if="scope.row.o_status == '1'" size="small" @click="showTeacherInfo(scope.row)">查看教师</el-button>
+          <el-button type="text" v-if="scope.row.o_status == '2'" size="small" @click="video(scope.row)">线上授课</el-button>
           <el-button type="text" v-if="scope.row.o_status == '2'" size="small" @click="updateOrderStatus3(scope.row)">完成授课</el-button>
           <el-button type="text" v-if="scope.row.o_status == '3'" size="small" @click="addComment(scope.row)">添加评价</el-button>
           <el-button type="text" v-if="scope.row.o_status == '3'" size="small" @click="openCommentTable(scope.row)">查看评价</el-button>
@@ -499,6 +500,16 @@ export default {
         }
       )
     },
+
+    video(row){
+        this.$router.push({
+          name: "video",
+          params: {
+            name: row.o_student_name,
+            ortherName: row.o_teacher_name,
+          },
+        });
+    }
   }
 }
 </script>

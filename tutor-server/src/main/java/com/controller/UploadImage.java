@@ -25,11 +25,14 @@ public class UploadImage {
     public ResponseEntity<?> imgFileUpload(@RequestParam("file")MultipartFile file,HttpServletRequest request) throws FileNotFoundException{
         System.out.println(request);
         File path = new File(ResourceUtils.getURL("classpath:").getPath());
-        if(!path.exists()) path = new File("");
+        if(!path.exists()) {
+            path = new File("");
+        }
         System.out.println("path:"+path.getAbsolutePath());
         System.out.println(path + "fasdf");
         if(file!=null) {
-            String fileName=System.currentTimeMillis()+(int)(Math.random()*1000)+file.getOriginalFilename();//生产随机名称
+            //生成随机名称
+            String fileName=System.currentTimeMillis()+(int)(Math.random()*1000)+file.getOriginalFilename();
             System.out.println("打开文件... ");
             //File img = new File(path+"//static//images//"+fileName);
             File img = new File(path.getAbsolutePath() + "\\static\\images\\" + fileName);
