@@ -1,7 +1,6 @@
 <template>
   <div id="poster">
     <div style="width: 70%; margin: 0 auto">
-
       <div class="comment-list">
         <el-alert title="最新公告" type="success" :close-text="blogList.length">
         </el-alert>
@@ -63,11 +62,9 @@
               <td>
                 <div @click="toOrderInfo(item.o_id)" class="comment-detail">
                   <p>孩子姓名：{{ item.o_name }}</p>
-                           <p>教学科目：{{item.o_type}}</p>
-                  <!--          <p>教学科目：{{item.o_type}}</p>-->
+                  <p>教学科目：{{ item.o_type }}</p>
                   <p>教学地址：{{ item.o_address }}</p>
                   <p>要求：{{ item.o_time }}----{{ item.o_reamke }}</p>
-                  <!--          <a @click="toPreviewBlog(item.b_id)">{{item.b_titile}}</a>-->
                 </div>
               </td>
             </tr>
@@ -191,7 +188,6 @@
                           :src="item.u_image"
                         ></el-avatar>
                       </div>
-                      <!--                </div>-->
                     </div>
                   </div>
                   <div
@@ -211,28 +207,17 @@
                 <div @click="toTeacherInfo(item.u_id)" class="comment-detail">
                   <p>性别：{{ item.u_sex }}</p>
                   <!--          <p>教学科目：{{item.o_type}}</p>-->
-                  <!--          <p>教学科目：{{item.o_type}}</p>-->
                   <p>地址：{{ item.u_address_name }}</p>
                   <p>备注：{{ item.u_remake }}</p>
-                  <!--          <a @click="toPreviewBlog(item.b_id)">{{item.b_titile}}</a>-->
                 </div>
               </td>
             </tr>
           </table>
         </div>
       </div>
-      <!-- <el-alert
-          style="margin-top: 20px; margin-bottom: 20px"
-          title="到底了"
-          type="success"
-        >
-        </el-alert> -->
+
     </div>
-    <!--      <div style="width: 15%; height:50px;float: right;  display: inline-block">-->
-    <!--        <el-calendar class="cale"v-model="value">-->
-    <!--        </el-calendar>-->
-    <!--      </div>-->
-    <!--    </el-row>-->
+
   </div>
 </template>
 
@@ -299,6 +284,7 @@ export default {
     this.loadBlog();
     this.loadOrder();
     this.loadTeacher();
+    console.log(this.$store.state.user);
   },
 
   methods: {

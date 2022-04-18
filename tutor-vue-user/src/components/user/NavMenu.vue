@@ -6,7 +6,6 @@
       mode="horizontal"
       background-color="white"
       text-color="#222"
-      active-text-color="red"
     >
       <el-menu-item v-for="(item, i) in navList" :key="i" :index="item.name">
         {{ item.navItem }}
@@ -21,7 +20,7 @@
         </el-row>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item>{{ u_show }}</el-dropdown-item>
-          <el-dropdown-item divided @click.native="AdminExitSystem()"
+          <el-dropdown-item divided @click.native="userExitSystem()"
             ><i class="el-icon-back" />注销</el-dropdown-item
           >
         </el-dropdown-menu>
@@ -69,7 +68,7 @@ export default {
       });
     },
 
-    AdminExitSystem() {
+    userExitSystem() {
       this.$store.commit("exitSystem");
       this.$router.push("/Login");
     },

@@ -22,11 +22,9 @@
     </div>
 
     <div id="callPage" class="call-page">
-      <el-button
-          @click="backHistory()"
-          style="float: right"
-          icon="el-icon-back"
-        >返回</el-button>
+      <el-button @click="backHistory()" style="float: right" icon="el-icon-back"
+        >返回</el-button
+      >
       <video id="localVideo" autoplay muted></video>
       <video id="remoteVideo" autoplay></video>
       <div class="row text-center">
@@ -38,9 +36,7 @@
           /> -->
           <button id="callBtn" class="btn-success btn">呼叫</button>
           <button id="hangUpBtn" class="btn-danger btn">挂断</button>
-          <button id="canvasBtn" @click="changeCanvasPage()">
-            切换为白板
-          </button>
+          <button id="canvasBtn" @click="changeCanvasPage()">切换为白板</button>
           <button id="display" v-if="displayBtn" @click="changeDisplayMedia()">
             屏幕共享
           </button>
@@ -53,6 +49,15 @@
 
     <div id="canvasPage" v-show="canvasPage">
       <canvas ref="tutorial" width="1280" height="720"></canvas>
+      <div class="row text-center">
+        <div class="col-md-12">
+          <button id="cancelBtn" @click="useLine()">画笔</button>
+          <button id="cancelBtn" @click="useEraser()">擦头</button>
+          <button id="cancelBtn" @click="cancel()">撤回</button>
+          <button id="display" v-if="displayBtn" @click="go()">前进</button>
+          <button id="display" v-else @click="">摄像头</button>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -84,16 +89,19 @@ export default {
       canvasPage: false,
       isClickCanvas: "",
       isMoveCanvas: "",
-      drawType: "",
-      lineWidth: "",
-      drawColor: "",
+      drawType: "line",
+      lineWidth: "4",
+      drawColor: "black",
       x: "",
       y: "",
       width: "",
       height: "",
       last: "",
-      imgData: "",
-      index: "",
+      imgData: [],
+      index: 0,
+      bindMousedown: "",
+      bindMousemove: "",
+      bindMouseup: "",
     };
   },
 
@@ -194,7 +202,7 @@ export default {
       });
     },
 
-    backHistory(){
+    backHistory() {
       this.$router.push({
         path: "/userOrder",
       });
@@ -381,10 +389,16 @@ export default {
       this.loginPage.style.display = "none";
       this.callPage.style.display = "none";
       this.canvasPage = true;
+
       this.ctx = this.canvas.getContext("2d");
       this.bindMousemove = this.onmousemove.bind(this); // 解决 eventlistener 不能用 bind
       this.bindMousedown = this.onmousedown.bind(this);
       this.bindMouseup = this.onmouseup.bind(this);
+      this.canvas.addEventListener("mousedown", this.bindMousedown);
+      this.canvas.addEventListener("mouseup", this.bindMouseup);
+      this.width = this.canvas.width;
+      this.height = this.canvas.height;
+      this.gatherImage();
     },
 
     // 鼠标按下
@@ -402,12 +416,15 @@ export default {
       this.isMoveCanvas = true; // 鼠标移动标识
       let endx = e.offsetX;
       let endy = e.offsetY;
-      this.width = endx - this.x;
-      this.height = endy - this.y;
+      let width = endx - this.x;
+      let height = endy - this.y;
       let now = [endx, endy]; // 当前移动到的坐标
       switch (this.drawType) {
         case "line":
           this.line(this.last, now, this.lineWidth, this.drawColor); // 绘制线条的方法
+          break;
+        case "eraser":
+          this.eraser(endx, endy, this.width, this.height, this.lineWidth);
           break;
       }
     },
@@ -423,6 +440,14 @@ export default {
           this.gatherImage(); // 保存每次的图像
         }
       }
+    },
+
+    useLine(){
+      this.drawType = "line";
+    },
+
+    useEraser(){
+      this.drawType = "eraser";
     },
 
     line(last, now, lineWidth, drawColor) {
@@ -443,9 +468,40 @@ export default {
       // 采集图像
       this.imgData = this.imgData.slice(0, this.index + 1);
       // 每次鼠标抬起时，将储存的imgdata截取至index处
-      let imgData = this.ctx.getImageData(0, 0, this.width, this.height);
+      let imgData = this.ctx.getImageData(0,0,this.width,this.height);
       this.imgData.push(imgData);
       this.index = this.imgData.length - 1; // 储存完后将 index 重置为 imgData 最后一位
+    },
+
+    cancel() {
+      // 撤回
+      if (--this.index < 0) {
+        // 最多重置到 0 位
+        this.index = 0;
+        return;
+      }
+      this.ctx.putImageData(this.imgData[this.index], 0, 0); // 绘制
+    },
+
+    go() {
+      // 前进
+      if (++this.index > this.imgData.length - 1) {
+        // 最多前进到 length -1
+        this.index = this.imgData.length - 1;
+        return;
+      }
+      this.ctx.putImageData(this.imgData[this.index], 0, 0);
+    },
+
+    eraser(endx, endy, width, height, lineWidth) {
+      // 橡皮擦
+      this.ctx.save(); // 缓存裁切前的
+      this.ctx.beginPath();
+      this.ctx.arc(endx, endy, lineWidth * 2, 0, 2 * Math.PI);
+      this.ctx.closePath();
+      this.ctx.clip(); // 裁切
+      this.ctx.clearRect(0, 0, width, height);
+      this.ctx.restore(); // 还原
     },
   },
 };
