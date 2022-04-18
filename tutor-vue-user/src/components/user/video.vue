@@ -33,7 +33,7 @@
           /> -->
           <button id="callBtn" class="btn-success btn">呼叫</button>
           <button id="hangUpBtn" class="btn-danger btn">挂断</button>
-          <button id="canvasBtn1" @click="changeCanvasPage()">
+          <button id="canvasBtn" @click="changeCanvasPage()">
             切换为白板
           </button>
           <button id="display" v-if="displayBtn" @click="changeDisplayMedia()">
@@ -158,9 +158,8 @@ export default {
 
       var that = this;
 
-
       this.callBtn.addEventListener("click", function () {
-        var callToUsername = this.$route.params.ortherName;
+        var callToUsername = that.$route.params.ortherName;
 
         if (callToUsername.length > 0) {
           that.connectedUser = callToUsername;
@@ -215,7 +214,21 @@ export default {
         this.loginPage.style.display = "none";
         this.callPage.style.display = "block";
 
-        this.changeDeviceMedia();
+        const mediaStreamConstraints = {
+          video: {
+            width: {
+              min: 1280,
+            },
+            height: {
+              min: 720,
+            },
+          },
+          audio: true,
+        };
+        navigator.mediaDevices
+          .getUserMedia(mediaStreamConstraints)
+          .then(this.gotLocalMediaStream)
+          .catch(this.handleLocalMediaStreamError);
       }
     },
 
@@ -228,7 +241,7 @@ export default {
 
       navigator.mediaDevices
         .getDisplayMedia(mediaStreamConstraints)
-        .then(this.gotLocalMediaStream)
+        .then(this.refreshStream)
         .catch(this.handleLocalMediaStreamError);
     },
 
@@ -247,8 +260,28 @@ export default {
       };
       navigator.mediaDevices
         .getUserMedia(mediaStreamConstraints)
-        .then(this.gotLocalMediaStream)
+        .then(this.refreshStream)
         .catch(this.handleLocalMediaStreamError);
+    },
+
+    refreshStream(newStream) {
+      var that = this;
+      this.stream = newStream;
+      this.localVideo.srcObject = this.stream;
+      this.yourConn.addStream(this.stream);
+      this.yourConn.createOffer(
+        function (offer) {
+          that.send({
+            type: "offer",
+            offer: offer,
+          });
+
+          that.yourConn.setLocalDescription(offer);
+        },
+        function (error) {
+          alert("Error when creating an offer");
+        }
+      );
     },
 
     gotLocalMediaStream(myStream) {
