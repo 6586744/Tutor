@@ -43,9 +43,7 @@
         <el-input v-if="editTure == false" :disabled="true" v-model="form.u_remake"></el-input>
         <el-input v-else v-model="form.u_remake"></el-input>
       </el-form-item>
-<!--      <el-form-item label="创建时间">-->
-<!--        <span>{{form.time}}</span>-->
-<!--      </el-form-item>-->
+
       <el-form-item>
         <el-button v-if="editTure == false" type="primary" @click="onSubmit">修改</el-button>
         <el-button v-else plain disabled type="primary" @click="onSubmit">修改</el-button>

@@ -137,5 +137,7 @@ export default {
 </script>
 
 <style scoped>
-
+.dialog-footer {
+  margin: 30px 0 0 150px;
+}
 </style>

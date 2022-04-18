@@ -22,6 +22,11 @@
     </div>
 
     <div id="callPage" class="call-page">
+      <el-button
+          @click="backHistory()"
+          style="float: right"
+          icon="el-icon-back"
+        >返回</el-button>
       <video id="localVideo" autoplay muted></video>
       <video id="remoteVideo" autoplay></video>
       <div class="row text-center">
@@ -187,6 +192,13 @@ export default {
         });
         that.handleLeave();
       });
+    },
+
+    backHistory(){
+      this.$router.push({
+        path: "/userOrder",
+      });
+      location.reload();
     },
 
     send(message) {
@@ -461,7 +473,7 @@ video {
   width: 320px;
   height: 180px;
   position: absolute;
-  top: 15px;
+  top: 55px;
   right: 15px;
 }
 

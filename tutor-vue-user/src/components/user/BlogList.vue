@@ -10,7 +10,7 @@
         class="item"
         >
           <div class="item-header">
-            <div class="info" style="width: 80%; height: 120px;float: left" >
+            <div class="info" style="width: 80%; float: left" >
               <div class="name">
                 {{item.b_user_name}}
               </div>
@@ -18,7 +18,7 @@
                 {{item.time}}
               </div>
             </div>
-            <img style=" width: 20%;;height: 140px;float: right;" :src="item.b_image"/>
+            <img style=" width: 20%;float: right;" :src="item.b_image"/>
           </div>
           <div class="comment-detail" >
             <a @click="toPreviewBlog(item.b_id)">{{item.b_title}}</a>
@@ -95,6 +95,7 @@ export default {
   position: relative;
   padding-left: 45px;
   padding-bottom: 10px;
+  height: 200px;
 }
 .author {
   position: absolute;
