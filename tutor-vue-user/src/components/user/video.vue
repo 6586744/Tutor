@@ -34,14 +34,30 @@
             type="text"
             placeholder="username to call"
           /> -->
-          <button id="callBtn" class="btn-success btn">呼叫</button>
-          <button id="hangUpBtn" class="btn-danger btn">挂断</button>
-          <button id="canvasBtn" @click="changeCanvasPage()">切换为白板</button>
+          <button
+            id="callBtn"
+            v-if="isCall == false"
+            class="btn-success btn"
+            @click="call()"
+          >
+            呼叫
+          </button>
+          <button
+            id="hangUpBtn"
+            v-if="isCall"
+            class="btn-danger btn"
+            @click="hangUp()"
+          >
+            挂断
+          </button> 
           <button id="display" v-if="displayBtn" @click="changeDisplayMedia()">
             屏幕共享
           </button>
-          <button id="display" v-else @click="changeDeviceMedia()">
+          <button id="camera" v-else @click="changeDeviceMedia()">
             摄像头
+          </button>
+          <button id="canvasBtn" v-if="isCall" @click="changeCanvasPage()">
+            切换为白板
           </button>
         </div>
       </div>
@@ -51,11 +67,12 @@
       <canvas ref="tutorial" width="1280" height="720"></canvas>
       <div class="row text-center">
         <div class="col-md-12">
-          <button id="cancelBtn" @click="useLine()">画笔</button>
-          <button id="cancelBtn" @click="useEraser()">擦头</button>
+          <button id="lineBtn" @click="useLine()">画笔</button>
+          <button id="eraserBtn" @click="useEraser()">擦头</button>
           <button id="cancelBtn" @click="cancel()">撤回</button>
-          <button id="display" v-if="displayBtn" @click="go()">前进</button>
-          <button id="display" v-else @click="">摄像头</button>
+          <button id="goBtn" @click="go()">前进</button>
+          <button id="clearBtn" @click="clearAll()">清屏</button>
+          <button id="media" @click="changeMedia()">切回视频画面</button>
         </div>
       </div>
     </div>
@@ -80,8 +97,10 @@ export default {
       localVideo: "",
       remoteVideo: "",
       yourConn: "",
+      sendChannel: "",
       stream: "",
       displayBtn: true,
+      isCall: false,
 
       canvas: "",
       ctx: "",
@@ -168,38 +187,39 @@ export default {
       this.callPage.style.display = "none";
 
       this.canvas = this.$refs.tutorial;
+    },
 
-      var that = this;
+    call() {
+      var callToUsername = this.$route.params.ortherName;
+      this.sendChannel = this.yourConn.createDataChannel("sendDataChannel");
+      this.sendChannel.onmessage = this.receiveData;
+      this.isCall = true;
 
-      this.callBtn.addEventListener("click", function () {
-        var callToUsername = that.$route.params.ortherName;
+      if (callToUsername.length > 0) {
+        this.connectedUser = callToUsername;
+        var that = this;
+        // create an offer
+        this.yourConn.createOffer(
+          function (offer) {
+            that.send({
+              type: "offer",
+              offer: offer,
+            });
 
-        if (callToUsername.length > 0) {
-          that.connectedUser = callToUsername;
+            that.yourConn.setLocalDescription(offer);
+          },
+          function (error) {
+            alert("Error when creating an offer");
+          }
+        );
+      }
+    },
 
-          // create an offer
-          that.yourConn.createOffer(
-            function (offer) {
-              that.send({
-                type: "offer",
-                offer: offer,
-              });
-
-              that.yourConn.setLocalDescription(offer);
-            },
-            function (error) {
-              alert("Error when creating an offer");
-            }
-          );
-        }
+    hangUp() {
+      this.send({
+        type: "leave",
       });
-
-      this.hangUpBtn.addEventListener("click", function () {
-        that.send({
-          type: "leave",
-        });
-        that.handleLeave();
-      });
+      this.handleLeave();
     },
 
     backHistory() {
@@ -249,6 +269,17 @@ export default {
           .getUserMedia(mediaStreamConstraints)
           .then(this.gotLocalMediaStream)
           .catch(this.handleLocalMediaStreamError);
+
+        this.isFirstCanvas = false;
+        this.ctx = this.canvas.getContext("2d");
+        this.bindMousemove = this.onmousemove.bind(this);
+        this.bindMousedown = this.onmousedown.bind(this);
+        this.bindMouseup = this.onmouseup.bind(this);
+        this.canvas.addEventListener("mousedown", this.bindMousedown);
+        this.canvas.addEventListener("mouseup", this.bindMouseup);
+        this.width = this.canvas.width;
+        this.height = this.canvas.height;
+        this.gatherImage();
       }
     },
 
@@ -328,6 +359,11 @@ export default {
         that.remoteVideo.srcObject = e.stream;
       };
 
+      this.yourConn.ondatachannel = function (e) {
+        that.sendChannel = e.channel;
+        that.sendChannel.onmessage = that.receiveData;
+      };
+
       // Setup ice handling
       this.yourConn.onicecandidate = function (event) {
         console.log("get IceCandidate");
@@ -345,6 +381,7 @@ export default {
     },
 
     handleOffer(offer, name) {
+      this.isCall = true;
       this.connectedUser = name;
       this.yourConn.setRemoteDescription(new RTCSessionDescription(offer));
 
@@ -375,30 +412,49 @@ export default {
     },
 
     handleLeave() {
+      this.isCall = false;
+      this.clearAll();
       this.connectedUser = null;
       this.remoteVideo.src = null;
 
+      this.sendChannel.close();
       this.yourConn.close();
       this.yourConn.onicecandidate = null;
       this.yourConn.onaddstream = null;
+      this.yourConn.ondatachannel = null;
       this.gotLocalMediaStream(this.stream);
     },
 
     changeCanvasPage() {
-      console.log("use changeCanvasPage");
       this.loginPage.style.display = "none";
       this.callPage.style.display = "none";
       this.canvasPage = true;
+    },
 
-      this.ctx = this.canvas.getContext("2d");
-      this.bindMousemove = this.onmousemove.bind(this); // 解决 eventlistener 不能用 bind
-      this.bindMousedown = this.onmousedown.bind(this);
-      this.bindMouseup = this.onmouseup.bind(this);
-      this.canvas.addEventListener("mousedown", this.bindMousedown);
-      this.canvas.addEventListener("mouseup", this.bindMouseup);
-      this.width = this.canvas.width;
-      this.height = this.canvas.height;
-      this.gatherImage();
+    changeMedia() {
+      this.canvasPage = false;
+      this.callPage.style.display = "block";
+    },
+
+    sendData(data) {
+      console.log(data);
+      this.sendChannel.send(JSON.stringify(data));
+    },
+
+    receiveData(event) {
+      var data = JSON.parse(event.data);
+      console.log(data);
+      switch (data.drawType) {
+        case "line":
+          this.line(data.last, data.now, data.lineWidth, data.drawColor); // 绘制线条的方法
+          break;
+        case "eraser":
+          this.eraser(data.endx,data.endy,data.width,data.height,data.lineWidth);
+          break;
+        case "clear":
+          this.handleClear();
+          break;
+      }
     },
 
     // 鼠标按下
@@ -422,9 +478,24 @@ export default {
       switch (this.drawType) {
         case "line":
           this.line(this.last, now, this.lineWidth, this.drawColor); // 绘制线条的方法
+          this.sendData({
+            drawType: this.drawType,
+            last: this.last,
+            now: now,
+            lineWidth: this.lineWidth,
+            drawColor: this.drawColor,
+          });
           break;
         case "eraser":
           this.eraser(endx, endy, this.width, this.height, this.lineWidth);
+          this.sendData({
+            drawType: "eraser",
+            endx: endx,
+            endy: endy,
+            width: this.width,
+            height: this.height,
+            lineWidth:this.lineWidth,
+          });
           break;
       }
     },
@@ -442,11 +513,11 @@ export default {
       }
     },
 
-    useLine(){
+    useLine() {
       this.drawType = "line";
     },
 
-    useEraser(){
+    useEraser() {
       this.drawType = "eraser";
     },
 
@@ -468,7 +539,7 @@ export default {
       // 采集图像
       this.imgData = this.imgData.slice(0, this.index + 1);
       // 每次鼠标抬起时，将储存的imgdata截取至index处
-      let imgData = this.ctx.getImageData(0,0,this.width,this.height);
+      let imgData = this.ctx.getImageData(0, 0, this.width, this.height);
       this.imgData.push(imgData);
       this.index = this.imgData.length - 1; // 储存完后将 index 重置为 imgData 最后一位
     },
@@ -503,6 +574,19 @@ export default {
       this.ctx.clearRect(0, 0, width, height);
       this.ctx.restore(); // 还原
     },
+
+    clearAll() {
+      this.index = 1;
+      this.cancel();
+      this.sendData({
+        drawType: "clear",
+      });
+    },
+
+    handleClear(){
+      this.index =1;
+      this.cancel();
+    }
   },
 };
 </script>

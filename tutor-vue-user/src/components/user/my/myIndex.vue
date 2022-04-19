@@ -56,7 +56,7 @@
                   <i class="el-icon-edit"></i>我的订单
                 </el-menu-item>
 
-                <el-menu-item v-if="role == '2'" index="/tercherSubscribe">
+                <el-menu-item v-if="role == '2'" index="/teacherSubscribe">
                   <i class="el-icon-edit"></i>我的预约
                 </el-menu-item>
 
