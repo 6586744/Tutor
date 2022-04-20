@@ -120,9 +120,12 @@ public class UserController {
     @GetMapping(value = "/findTeacherByAddress")
     public String findTeacherByAddress(@RequestParam("address") String address) {
         List<User> userList = userService.getBaseMapper().selectList(new QueryWrapper<User>()
+                //根据地址推荐
                 .eq("u_address_name", address)
+                //未在教学中
                 .eq("u_teachering", "0")
-                .eq("u_authentication", "1"));//需要认证通过且未在教学中
+                //需要认证通过
+                .eq("u_authentication", "1"));
         return JSON.toJSONString(userList);
     }
 

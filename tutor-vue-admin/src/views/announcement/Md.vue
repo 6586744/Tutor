@@ -50,8 +50,8 @@ export default {
       form : {
         b_name:'',
         b_image:'',
-        b_url: 'http://127.0.0.1:8083/imgUpload', //上传地址
-        m_url:'http://127.0.0.1:8083/imgUpload',
+        b_url: 'https://192.168.0.110:8083/imgUpload', //上传地址
+        m_url:'https://192.168.0.110:8083/imgUpload',
         delivery:false, //是否开启预览
       },
       rules: {

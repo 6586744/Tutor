@@ -55,7 +55,7 @@ export default {
       form:{
         username: '',//真实姓名
         password: '',//确认密码
-        u_url: 'http://127.0.0.1:8083/imgUpload',
+        u_url: 'https://191.168.0.110:8083/imgUpload',
         u_image:'',//头像
         passwordTrue:'',
         u_email:'',//邮箱

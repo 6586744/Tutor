@@ -49,7 +49,7 @@
             @click="hangUp()"
           >
             挂断
-          </button> 
+          </button>
           <button id="display" v-if="displayBtn" @click="changeDisplayMedia()">
             屏幕共享
           </button>
@@ -116,6 +116,8 @@ export default {
       width: "",
       height: "",
       last: "",
+      ortherLast: "",
+      originImg: "",
       imgData: [],
       index: 0,
       bindMousedown: "",
@@ -223,9 +225,16 @@ export default {
     },
 
     backHistory() {
-      this.$router.push({
-        path: "/userOrder",
-      });
+      var role = this.$store.state.user.u_name.u_role;
+      if (role == "1") {
+        this.$router.push({
+          path: "/userOrder",
+        });
+      } else if (role == "2") {
+        this.$router.push({
+          path: "/teacherOrder",
+        });
+      }
       location.reload();
     },
 
@@ -279,6 +288,7 @@ export default {
         this.canvas.addEventListener("mouseup", this.bindMouseup);
         this.width = this.canvas.width;
         this.height = this.canvas.height;
+        this.originImg = this.ctx.getImageData(0, 0, this.width, this.height);
         this.gatherImage();
       }
     },
@@ -437,22 +447,45 @@ export default {
     },
 
     sendData(data) {
-      console.log(data);
       this.sendChannel.send(JSON.stringify(data));
     },
 
     receiveData(event) {
+      console.log(event.data);
       var data = JSON.parse(event.data);
-      console.log(data);
       switch (data.drawType) {
         case "line":
-          this.line(data.last, data.now, data.lineWidth, data.drawColor); // 绘制线条的方法
+          this.ortherLine(
+            this.ortherLast,
+            data.now,
+            data.lineWidth,
+            data.drawColor
+          ); // 绘制线条的方法
           break;
         case "eraser":
-          this.eraser(data.endx,data.endy,data.width,data.height,data.lineWidth);
+          this.eraser(
+            data.endx,
+            data.endy,
+            data.width,
+            data.height,
+            data.lineWidth
+          );
           break;
         case "clear":
           this.handleClear();
+          break;
+        case "first":
+          this.ortherLast = data.last;
+          break;
+        case "last":
+          this.index = 0;
+          this.imgData = [];
+          this.gatherImage();
+          break;
+        case "cancel":
+          this.sendChannel.onmessage = this.receiveImgData();
+          break;
+        default:
           break;
       }
     },
@@ -465,6 +498,10 @@ export default {
       this.y = e.offsetY;
       this.last = [this.x, this.y]; // 保存每次的坐标
       this.canvas.addEventListener("mousemove", this.bindMousemove); // 监听 鼠标移动事件
+      this.sendData({
+        drawType: "first",
+        last: this.last,
+      });
     },
 
     // 鼠标移动
@@ -480,7 +517,6 @@ export default {
           this.line(this.last, now, this.lineWidth, this.drawColor); // 绘制线条的方法
           this.sendData({
             drawType: this.drawType,
-            last: this.last,
             now: now,
             lineWidth: this.lineWidth,
             drawColor: this.drawColor,
@@ -494,7 +530,7 @@ export default {
             endy: endy,
             width: this.width,
             height: this.height,
-            lineWidth:this.lineWidth,
+            lineWidth: this.lineWidth,
           });
           break;
       }
@@ -509,6 +545,9 @@ export default {
           // 鼠标没有移动不保存
           this.isMoveCanvas = false;
           this.gatherImage(); // 保存每次的图像
+          this.sendData({
+            drawType: "last",
+          });
         }
       }
     },
@@ -535,6 +574,20 @@ export default {
       this.last = now; // 更新上次的坐标
     },
 
+    ortherLine(last, now, lineWidth, drawColor) {
+      // 绘制线性
+      this.ctx.beginPath();
+      this.ctx.lineCap = "round"; // 设定线条与线条间接合处的样式
+      this.ctx.lineJoin = "round";
+      this.ctx.lineWidth = lineWidth;
+      this.ctx.strokeStyle = drawColor;
+      this.ctx.moveTo(last[0], last[1]);
+      this.ctx.lineTo(now[0], now[1]);
+      this.ctx.closePath();
+      this.ctx.stroke(); // 进行绘制
+      this.ortherLast = now; // 更新上次的坐标
+    },
+
     gatherImage() {
       // 采集图像
       this.imgData = this.imgData.slice(0, this.index + 1);
@@ -552,6 +605,7 @@ export default {
         return;
       }
       this.ctx.putImageData(this.imgData[this.index], 0, 0); // 绘制
+      this.sendImage();
     },
 
     go() {
@@ -562,6 +616,7 @@ export default {
         return;
       }
       this.ctx.putImageData(this.imgData[this.index], 0, 0);
+      this.sendImage();
     },
 
     eraser(endx, endy, width, height, lineWidth) {
@@ -576,17 +631,92 @@ export default {
     },
 
     clearAll() {
-      this.index = 1;
-      this.cancel();
       this.sendData({
         drawType: "clear",
       });
+      this.handleClear();
     },
 
-    handleClear(){
-      this.index =1;
-      this.cancel();
-    }
+    handleClear() {
+      this.ctx.putImageData(this.originImg, 0, 0); // 绘制
+      this.index = 0;
+      this.imgData = [];
+      this.gatherImage();
+    },
+
+    sendImage() {
+      // Split data channel message in chunks of this byte length.
+      var CHUNK_LEN = 64000;
+      var img = this.imgData[this.index],
+        len = img.data.byteLength,
+        n = (len / CHUNK_LEN) | 0;
+
+      console.log("Sending a total of " + len + " byte(s)");
+
+      if (!this.sendChannel) {
+        logError(
+          "Connection has not been initiated. " +
+            "Get two peers in the same room first"
+        );
+        return;
+      } else if (this.sendChannel.readyState === "closed") {
+        logError("Connection was lost. Peer closed the connection.");
+        return;
+      }
+
+      this.sendData({
+        drawType: "cancel",
+      });
+      this.sendChannel.send(len);
+
+      // split the photo and send in chunks of about 64KB
+      for (var i = 0; i < n; i++) {
+        var start = i * CHUNK_LEN,
+          end = (i + 1) * CHUNK_LEN;
+        console.log(start + " - " + (end - 1));
+        this.sendChannel.send(img.data.subarray(start, end));
+      }
+
+      // send the reminder, if any
+      if (len % CHUNK_LEN) {
+        console.log("last " + (len % CHUNK_LEN) + " byte(s)");
+        this.sendChannel.send(img.data.subarray(n * CHUNK_LEN));
+      }
+    },
+
+    receiveImgData() {
+      var buf, count;
+      var that = this;
+
+      return function onmessage(event) {
+        if (typeof event.data === "string") {
+          buf = window.buf = new Uint8ClampedArray(parseInt(event.data));
+          count = 0;
+          console.log("Expecting a total of " + buf.byteLength + " bytes");
+          return;
+        }
+
+        var data = new Uint8ClampedArray(event.data);
+        buf.set(data, count);
+
+        count += data.byteLength;
+        console.log("count: " + count);
+
+        if (count === buf.byteLength) {
+          // we're done: all data chunks have been received
+          console.log("Done. Rendering photo.");
+          that.renderImg(buf);
+        }
+      };
+    },
+
+    renderImg(data) {
+      var img = this.ctx.createImageData(this.width, this.height);
+      img.data.set(data);
+      this.ctx.putImageData(img, 0, 0);
+      this.gatherImage();
+      this.sendChannel.onmessage = this.receiveData;
+    },
   },
 };
 </script>

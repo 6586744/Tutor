@@ -57,7 +57,7 @@ export default {
         b_type:'',
         b_typeItems : [], //遍历类型
         b_image:'',
-        b_url: 'http://127.0.0.1:8083/imgUpload', //上传地址
+        b_url: 'https://192.168.0.110:8083/imgUpload', //上传地址
         dynamicTags:[], //标签值
         inputVisible: false, //是否显示标签输入框
         inputValue: '',
