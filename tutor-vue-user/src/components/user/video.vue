@@ -1,31 +1,14 @@
 <template>
   <div id="body">
     <div id="loginPage" class="container text-center">
-      <!-- <div class="row">
-        <div class="col-md-4 col-md-offset-4">
-          <h2>线上视频通讯</h2>
-          <label for="usernameInput" class="sr-only">Login</label>
-          <input
-            type="email"
-            id="usernameInput"
-            class="form-control formgroup"
-            placeholder="Login"
-            required=""
-            autofocus=""
-          />
-          <button id="loginBtn" class="btn btn-lg btn-primary btnblock">
-            Sign in
-          </button>
-          <button id="canvasBtn" @click="changeCanvasPage()">切换为白板</button>
-        </div>
-      </div> -->
+
     </div>
 
     <div id="callPage" class="call-page">
       <el-button @click="backHistory()" style="float: right" icon="el-icon-back"
         >返回</el-button
       >
-      <video id="localVideo" autoplay muted></video>
+      <video id="localVideo" autoplay></video>
       <video id="remoteVideo" autoplay></video>
       <div class="row text-center">
         <div class="col-md-12">
@@ -34,31 +17,31 @@
             type="text"
             placeholder="username to call"
           /> -->
-          <button
+          <el-button
             id="callBtn"
             v-if="isCall == false"
             class="btn-success btn"
             @click="call()"
           >
             呼叫
-          </button>
-          <button
+          </el-button>
+          <el-button
             id="hangUpBtn"
             v-if="isCall"
             class="btn-danger btn"
             @click="hangUp()"
           >
             挂断
-          </button>
-          <button id="display" v-if="displayBtn" @click="changeDisplayMedia()">
+          </el-button>
+          <el-button id="display" v-if="displayBtn" @click="changeDisplayMedia()">
             屏幕共享
-          </button>
-          <button id="camera" v-else @click="changeDeviceMedia()">
+          </el-button>
+          <el-button id="camera" v-else @click="changeDeviceMedia()">
             摄像头
-          </button>
-          <button id="canvasBtn" v-if="isCall" @click="changeCanvasPage()">
+          </el-button>
+          <el-button id="canvasBtn" v-if="isCall" @click="changeCanvasPage()">
             切换为白板
-          </button>
+          </el-button>
         </div>
       </div>
     </div>
@@ -67,12 +50,12 @@
       <canvas ref="tutorial" width="1280" height="720"></canvas>
       <div class="row text-center">
         <div class="col-md-12">
-          <button id="lineBtn" @click="useLine()">画笔</button>
-          <button id="eraserBtn" @click="useEraser()">擦头</button>
-          <button id="cancelBtn" @click="cancel()">撤回</button>
-          <button id="goBtn" @click="go()">前进</button>
-          <button id="clearBtn" @click="clearAll()">清屏</button>
-          <button id="media" @click="changeMedia()">切回视频画面</button>
+          <el-button id="lineBtn" @click="useLine()">画笔</el-button>
+          <el-button id="eraserBtn" @click="useEraser()">擦头</el-button>
+          <el-button id="cancelBtn" @click="cancel()">撤回</el-button>
+          <el-button id="goBtn" @click="go()">前进</el-button>
+          <el-button id="clearBtn" @click="clearAll()">清屏</el-button>
+          <el-button id="media" @click="changeMedia()">切回视频画面</el-button>
         </div>
       </div>
     </div>
@@ -163,6 +146,9 @@ export default {
           case "leave":
             that.handleLeave();
             break;
+          case "wait":
+            that.handleWait(data.success);
+            break;
           default:
             break;
         }
@@ -193,6 +179,14 @@ export default {
 
     call() {
       var callToUsername = this.$route.params.ortherName;
+      this.send({
+        type: "connect",
+        name: callToUsername,
+      });
+    },
+
+    connect() {
+      var callToUsername = this.$route.params.ortherName;
       this.sendChannel = this.yourConn.createDataChannel("sendDataChannel");
       this.sendChannel.onmessage = this.receiveData;
       this.isCall = true;
@@ -214,6 +208,14 @@ export default {
             alert("Error when creating an offer");
           }
         );
+      }
+    },
+
+    handleWait(success) {
+      if (success == false) {
+        this.$message("对方还未进入到线上教学！");
+      } else {
+        this.connect();
       }
     },
 
@@ -296,8 +298,10 @@ export default {
     changeDisplayMedia() {
       this.displayBtn = false;
       const mediaStreamConstraints = {
-        video: true,
-        audio: true,
+        video: {
+          cursor: "always"
+        },
+        audio: true
       };
 
       navigator.mediaDevices
@@ -327,22 +331,25 @@ export default {
 
     refreshStream(newStream) {
       var that = this;
+      this.yourConn.removeStream(this.stream);
       this.stream = newStream;
       this.localVideo.srcObject = this.stream;
       this.yourConn.addStream(this.stream);
-      this.yourConn.createOffer(
-        function (offer) {
-          that.send({
-            type: "offer",
-            offer: offer,
-          });
+      if (this.isCall == true) {
+        this.yourConn.createOffer(
+          function (offer) {
+            that.send({
+              type: "offer",
+              offer: offer,
+            });
 
-          that.yourConn.setLocalDescription(offer);
-        },
-        function (error) {
-          alert("Error when creating an offer");
-        }
-      );
+            that.yourConn.setLocalDescription(offer);
+          },
+          function (error) {
+            alert("Error when creating an offer");
+          }
+        );
+      }
     },
 
     gotLocalMediaStream(myStream) {
@@ -669,7 +676,6 @@ export default {
       });
       this.sendChannel.send(len);
 
-      // split the photo and send in chunks of about 64KB
       for (var i = 0; i < n; i++) {
         var start = i * CHUNK_LEN,
           end = (i + 1) * CHUNK_LEN;
@@ -677,7 +683,6 @@ export default {
         this.sendChannel.send(img.data.subarray(start, end));
       }
 
-      // send the reminder, if any
       if (len % CHUNK_LEN) {
         console.log("last " + (len % CHUNK_LEN) + " byte(s)");
         this.sendChannel.send(img.data.subarray(n * CHUNK_LEN));
@@ -755,7 +760,6 @@ video {
 #canvasPage {
   display: block;
   position: relative;
-  display: block;
   margin: 0 auto;
   width: 1280px;
   height: 785px;

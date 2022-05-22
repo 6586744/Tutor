@@ -71,7 +71,7 @@
           </table>
         </div>
       </div>
-      <el-dialog title="详情" :visible.sync="showOrderInfo">
+      <el-dialog title="详情" :visible.sync="showOrderInfo" :modal-append-to-body="false">
         <div class="grid-content bg-purple">
           <el-card class="box-card">
             <div slot="header" class="clearfix">
@@ -206,18 +206,16 @@
               <td>
                 <div @click="toTeacherInfo(item.u_id)" class="comment-detail">
                   <p>性别：{{ item.u_sex }}</p>
-                  <!--          <p>教学科目：{{item.o_type}}</p>-->
+                  <!-- <p>教学科目：{{ item.o_type }}</p> -->
                   <p>地址：{{ item.u_address_name }}</p>
-                  <p>备注：{{ item.u_remake }}</p>
+                  <!-- <p>备注：{{ item.u_remake }}</p> -->
                 </div>
               </td>
             </tr>
           </table>
         </div>
       </div>
-
     </div>
-
   </div>
 </template>
 

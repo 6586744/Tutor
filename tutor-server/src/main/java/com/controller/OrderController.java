@@ -168,10 +168,10 @@ public class OrderController {
    @GetMapping(value = "/expertOrder")
     public String expertOrder(@RequestParam("userId") String userId) {
        List<Expert> expertList = expertService.getBaseMapper().selectList(new QueryWrapper<Expert>().eq("e_teacher_id", userId));
-       if(expertList.size() == 0) {
-           return JSON.toJSONString(orderService.getBaseMapper().selectList(new QueryWrapper<Order>()
-                   .eq("o_status", "0")));
-       }
+//       if(expertList.size() == 0) {
+//           return JSON.toJSONString(orderService.getBaseMapper().selectList(new QueryWrapper<Order>()
+//                   .eq("o_status", "0")));
+//       }
        ArrayList<Order> returnList = new ArrayList<>();
        for (Expert expert : expertList) {
            List<Order> orderList = orderService.getBaseMapper().selectList(new QueryWrapper<Order>()
@@ -181,10 +181,10 @@ public class OrderController {
                returnList.add(order);
            }
        }
-       if(returnList.size() == 0) {
-           return JSON.toJSONString(orderService.getBaseMapper().selectList(new QueryWrapper<Order>()
-                   .eq("o_status", "0")));
-       }
+//       if(returnList.size() == 0) {
+//           return JSON.toJSONString(orderService.getBaseMapper().selectList(new QueryWrapper<Order>()
+//                   .eq("o_status", "0")));
+//       }
        return JSON.toJSONString(returnList);
    }
 

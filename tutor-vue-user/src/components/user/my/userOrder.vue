@@ -64,7 +64,8 @@
         </template>
       </el-table-column>
     </el-table>
-    <el-dialog title="编辑订单" :visible.sync="updateForm">
+
+    <el-dialog title="编辑订单" :visible.sync="updateForm" :modal-append-to-body="false">
       <el-form :model="formUpdate">
         <el-form-item label="孩子姓名" :label-width="formLabelWidth">
           <el-input disabled v-model="formUpdate.o_name" autocomplete="off"></el-input>
@@ -109,7 +110,7 @@
       </div>
     </el-dialog>
 
-    <el-dialog title="预约列表" :visible.sync="showSubscribeTable">
+    <el-dialog title="预约列表" :visible.sync="showSubscribeTable" :modal-append-to-body="false">
       <el-table :data="subscribeList">
         <el-table-column prop="s_user_name" label="教师名" >
         </el-table-column>
@@ -127,6 +128,7 @@
         <el-button @click="showSubscribeTable = false">取 消</el-button>
       </div>
     </el-dialog>
+
     <el-pagination
       background
       layout="total, sizes, prev, pager, next, jumper"
@@ -138,7 +140,7 @@
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
     ></el-pagination>
-    <el-dialog title="添加评价" width="50%" :visible.sync="showCommentForm">
+  <el-dialog title="添加评价" width="50%" :visible.sync="showCommentForm" :modal-append-to-body="false">
     <el-form :model="comment">
       <el-form-item label="评价内容" :label-width="formLabelWidth">
         <el-input type="textarea"  v-model="comment.c_content" autocomplete="off"></el-input>
@@ -149,7 +151,8 @@
       <el-button type="primary" @click="submitComment()">确 定</el-button>
     </div>
   </el-dialog>
-    <el-dialog title="查看评价" width="50%" :visible.sync="showCommentTable">
+
+    <el-dialog title="查看评价" width="50%" :visible.sync="showCommentTable" :modal-append-to-body="false">
       <el-table :data="commentList">
         <el-table-column prop="c_content" label="评价内容" >
         </el-table-column>

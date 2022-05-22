@@ -1,7 +1,7 @@
 <template>
 
   <div>
-    <el-alert style="background-color: #409EFF; color: #f0f2f5; font-style: unset; margin-top: 10px; margin-bottom: 20px" :closable="false" title="专业管理"  />
+    <el-alert style="background-color: #409EFF; color: #f0f2f5; font-style: unset; margin-top: 10px; margin-bottom: 20px" :closable="false" title="科目管理"  />
     <el-button type="primary" @click="dialogFormVisible = true"><i class="el-icon-circle-plus-outline"></i>添加科目</el-button>
     <el-divider></el-divider>
     <el-dialog title="添加科目" width="50%" :visible.sync="dialogFormVisible">

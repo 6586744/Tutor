@@ -40,7 +40,7 @@
       <el-form-item label="教学时间说明" :label-width="formLabelWidth">
         <el-input v-model="form.o_time" autocomplete="off"></el-input>
       </el-form-item>
-      <el-form-item label="教师要求" :label-width="formLabelWidth">
+      <el-form-item label="详细地址及其他要求" :label-width="formLabelWidth">
         <el-input v-model="form.o_reamke" autocomplete="off"></el-input>
       </el-form-item>
     </el-form>
@@ -50,7 +50,6 @@
     </div>
   </div>
 </template>
-<!--1249944581-->
 <script>
 export default {
   name: "userAddOrder",

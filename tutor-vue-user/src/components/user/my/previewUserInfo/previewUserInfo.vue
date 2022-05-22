@@ -156,7 +156,7 @@
         </div>
       </el-col>
     </el-row>
-    <el-dialog title="认证" :visible.sync="showAuthForm">
+    <el-dialog title="认证" :visible.sync="showAuthForm" :modal-append-to-body="false">
       <el-form :model="user">
         <el-form-item label="身份证号" :label-width="formLabelWidth">
           <el-input v-if="user.u_authentication == '0'" v-model="user.u_card" autocomplete="off"></el-input>

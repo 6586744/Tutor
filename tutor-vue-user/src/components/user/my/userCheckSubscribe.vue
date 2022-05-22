@@ -20,14 +20,15 @@
         <el-table-column
           fixed="right"
           label="操作"
-          width="100">
+          width="150">
           <template slot-scope="scope">
             <el-button type="text" size="small" @click="toTeacherInfo(scope.row)">查看详情</el-button>
+            <el-button type="text" size="small" @click="selectTeacher(scope.row)">选择</el-button>
           </template>
         </el-table-column>
       </el-table>
 
-      <el-dialog title="预览" width="30%"  :visible.sync="showUserImg">
+      <el-dialog title="预览" width="30%"  :visible.sync="showUserImg" :modal-append-to-body="false">
         <el-image :src="imageUrl" ></el-image>
       </el-dialog>
     </div>
@@ -50,6 +51,23 @@ export default {
         path:`/teacherInfo1/${row.s_user_id}`
       })
     },
+    selectTeacher(row){
+      this.axios.post(
+        '/order/addOrderTeacher',
+        {
+          o_id: this.$route.params.orderId,
+          o_teacher_id : row.s_user_id,
+          o_teacher_name : row.s_user_name,
+          o_teacher_image : row.s_user_image,
+          o_status: '1',
+        }
+      ).then(
+        (resp) => {
+          this.$message("选择成功！");
+          window.history.back(-1)
+        }
+      )
+    },
     back() {
       window.history.back(-1)
     },
@@ -70,6 +88,7 @@ export default {
         }
       ).then(
         (resp) => {
+          console.log(resp.data);
           this.subscribeList = resp.data;
         }
       )

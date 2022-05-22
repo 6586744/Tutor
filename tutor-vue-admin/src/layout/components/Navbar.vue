@@ -7,7 +7,6 @@
     <div class="right-menu">
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
-<!--          <img :src="u_image" class="user-avatar">-->
           <span>{{u_image}}</span>
           <i class="el-icon-caret-bottom" />
         </div>

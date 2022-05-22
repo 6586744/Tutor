@@ -65,17 +65,6 @@ export const constantRoutes = [
       meta: { title: '首页', icon: 'home' }
     }]
   },
-  // {
-  //   path: '/index',
-  //   name: 'index',
-  //   component: Layout,
-  //   redirect: '/index/dashboard',
-  //   children: [{
-  //     path: 'dashboard',
-  //     name: 'Dashboard',
-  //     component: () => import('@/views/dashboard/index'),
-  //   }]
-  // },
 
   {
     path: '/users',
@@ -133,21 +122,6 @@ export const constantRoutes = [
     ]
   },
 
-  // {
-  //   path: '/test1',
-  //   component: Layout,
-  //   redirect: '/test1/test',
-  //   name: 'test1',
-  //   meta: { title: 'test', icon: 'table' },
-  //   children: [
-  //     {
-  //       path: 'test',
-  //       name: 'test',
-  //       component: () => import('@/views/Test/test'),
-  //       meta: {requireAuth: true,title: 'test111', icon: 'table' }
-  //     },
-  //   ]
-  // },
 
   {
     path: '/ac',
@@ -180,12 +154,6 @@ export const constantRoutes = [
         component: () => import('@/views/announcement/PreviewAnnouncement'),
         hidden: false,
       },
-      // {
-      //   path: 'classBManager',
-      //   name: 'classBManager',
-      //   component: () => import('@/views/type/classBManager'),
-      //   meta: {requireAuth: true,title: '班级管理', icon: '班级管理' }
-      // }
     ]
   },
 
@@ -231,7 +199,6 @@ const createRouter = () => new Router({
 
 const router = createRouter()
 
-// Detail see: https://github.com/vuejs/vue-router/issues/1234#issuecomment-357941465
 export function resetRouter() {
   const newRouter = createRouter()
   router.matcher = newRouter.matcher // reset router

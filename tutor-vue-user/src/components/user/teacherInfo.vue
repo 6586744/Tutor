@@ -156,7 +156,7 @@
         </div>
       </el-col>
     </el-row>
-    <el-dialog title="选择订单" :visible.sync="showOrderInfo">
+    <el-dialog title="选择订单" :visible.sync="showOrderInfo" :modal-append-to-body="false">
       <el-table :data="orderList">
         <el-table-column prop="o_name" label="学生" >
         </el-table-column>
