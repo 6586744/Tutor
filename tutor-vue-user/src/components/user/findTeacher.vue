@@ -5,7 +5,6 @@
         <el-tab-pane label="所有老师" name="1"></el-tab-pane>
         <el-tab-pane label="同一区域" name="2"></el-tab-pane>
         <el-tab-pane v-if="u_role == '1'" label="擅长推荐" name="3"></el-tab-pane>
-<!--        <el-tab-pane label="定时任务补偿" name="fourth">定时任务补偿</el-tab-pane>-->
       </el-tabs>
       <div class="top-title">
         <span>{{orderList.length}} 个老师</span>
@@ -22,7 +21,6 @@
               <div class="author">
                 <div class="demo-basic--circle">
                   <div class="block"><el-avatar size="medium" :src="item.u_image"></el-avatar></div>
-                  <!--                </div>-->
                 </div>
               </div>
               <div class="info" style="width: 80%; height: 120px;float: left" >
@@ -87,14 +85,7 @@ export default {
     }
   },
   methods : {
-    /**
-     * 推荐等tab切换
-     * @param tab
-     * @param event
-     *         <el-tab-pane label="所有老师" name="1"></el-tab-pane>
-     <el-tab-pane label="同一区域" name="2"></el-tab-pane>
-     <el-tab-pane label="擅长推荐" name="3"></el-tab-pane>
-     */
+
     handleClick(tab, event) {
       console.log(tab, event);
       if(this.activeName == '1') {
